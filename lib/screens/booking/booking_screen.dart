@@ -73,33 +73,37 @@ class _BookingScreenState extends State<BookingScreen> {
   void _handleNextButton() {
     if (!mounted) return;
 
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(
+          color: Colors.amber,
+        ),
+      ),
+    );
+
     String period = isAM ? 'صباحاً' : 'مساءً';
     String formattedTime =
         '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')} $period';
 
-    print("Navigating with data:");
-    print("Service Name: ${widget.serviceName}");
-    print("Service Price: ${widget.servicePrice}");
-    print("Barber Name: ${widget.barberName}");
-    print("Booking Date: $selectedDate");
-    print("Booking Time: $formattedTime");
-    print("Image URL: ${widget.barberImage}");
-
-    var confirmationScreen = BookingConfirmationScreen(
-      serviceName: widget.serviceName,
-      servicePrice: widget.servicePrice,
-      barberName: widget.barberName,
-      bookingDate: selectedDate,
-      bookingTime: formattedTime,
-      imageUrl: widget.barberImage,
-    );
-
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => confirmationScreen,
-      ),
-      (route) => route.isFirst,
-    );
+    // Navigate after small delay
+    Future.delayed(const Duration(milliseconds: 300), () {
+      Navigator.of(context).pop(); // Remove loading
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => BookingConfirmationScreen(
+            serviceName: widget.serviceName,
+            servicePrice: widget.servicePrice,
+            barberName: widget.barberName,
+            bookingDate: selectedDate,
+            bookingTime: formattedTime,
+            imageUrl: widget.barberImage,
+          ),
+        ),
+      );
+    });
   }
 
   @override
