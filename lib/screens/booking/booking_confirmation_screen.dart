@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'booking_success_screen.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
   final String serviceName;
@@ -14,9 +15,27 @@ class BookingConfirmationScreen extends StatelessWidget {
     required this.servicePrice,
     required this.barberName,
     required this.bookingDate,
-    required this.imageUrl,
     required this.bookingTime,
+    required this.imageUrl,
   });
+
+  String _getMonthName(int month) {
+    const months = [
+      'يناير',
+      'فبراير',
+      'مارس',
+      'إبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر'
+    ];
+    return months[month - 1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,33 +65,28 @@ class BookingConfirmationScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'الخدمة',
-                    style: TextStyle(
-                      color: Colors.amber,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  // الخدمة
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.1),
+                      color: const Color(0xFF3C3C3C),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.amber),
                     ),
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.amber,
-                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.amber.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.check, color: Colors.black),
+                          child: const Icon(
+                            Icons.shopping_bag,
+                            size: 32,
+                            color: Colors.amber,
+                          ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,111 +95,133 @@ class BookingConfirmationScreen extends StatelessWidget {
                                 serviceName,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
-                                '${servicePrice.toStringAsFixed(0)} ريال',
+                                '$servicePrice ريال',
                                 style: const TextStyle(
                                   color: Colors.amber,
-                                  fontSize: 14,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Icon(Icons.local_offer, color: Colors.amber),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'محترف الحلاقة',
-                    style: TextStyle(
-                      color: Colors.amber,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.amber),
-                    ),
-                    child: Row(
-                      children: [
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
+                            color: Colors.amber.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.check,
                             color: Colors.amber,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(Icons.check, color: Colors.black),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            barberName,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            imageUrl,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'موعد الحجز',
-                    style: TextStyle(
-                      color: Colors.amber,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
+                  // محترف الحلاقة
                   Container(
-                    width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.1),
+                      color: const Color(0xFF3C3C3C),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.amber),
                     ),
-                    child: Text(
-                      '${_getArabicDay(bookingDate.weekday)} ${bookingDate.day} ${_getArabicMonth(bookingDate.month)} ${bookingDate.year}\n$bookingTime',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(imageUrl),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                barberName,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.amber,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // موعد الحجز
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3C3C3C),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'موعد الحجز',
+                          style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'الأربعاء ${bookingDate.day} ${_getMonthName(bookingDate.month)} ${bookingDate.year}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          bookingTime,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
           ),
+          // زر تأكيد الحجز
           Padding(
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
               onPressed: () {
-                // تنفيذ عملية تأكيد الحجز
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BookingSuccessScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber,
@@ -206,45 +242,25 @@ class BookingConfirmationScreen extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFF2C2C2C),
+        selectedItemColor: Colors.amber,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'الرئيسية',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'حجوزاتي',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'حسابي',
+          ),
+        ],
+      ),
     );
-  }
-
-  String _getArabicDay(int weekday) {
-    switch (weekday) {
-      case DateTime.monday:
-        return 'الاثنين';
-      case DateTime.tuesday:
-        return 'الثلاثاء';
-      case DateTime.wednesday:
-        return 'الأربعاء';
-      case DateTime.thursday:
-        return 'الخميس';
-      case DateTime.friday:
-        return 'الجمعة';
-      case DateTime.saturday:
-        return 'السبت';
-      case DateTime.sunday:
-        return 'الأحد';
-      default:
-        return '';
-    }
-  }
-
-  String _getArabicMonth(int month) {
-    List<String> months = [
-      'يناير',
-      'فبراير',
-      'مارس',
-      'إبريل',
-      'مايو',
-      'يونيو',
-      'يوليو',
-      'أغسطس',
-      'سبتمبر',
-      'أكتوبر',
-      'نوفمبر',
-      'ديسمبر'
-    ];
-    return months[month - 1];
   }
 }

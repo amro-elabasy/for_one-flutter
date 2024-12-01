@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import '../booking/booking_screen.dart';
 
 class BarbersScreen extends StatefulWidget {
-  const BarbersScreen({super.key});
+  final String serviceName;
+  final double servicePrice;
+
+  const BarbersScreen({
+    super.key,
+    required this.serviceName,
+    required this.servicePrice,
+  });
 
   @override
   State<BarbersScreen> createState() => _BarbersScreenState();
@@ -157,10 +164,21 @@ class _BarbersScreenState extends State<BarbersScreen> {
                       bool hasSelected =
                           barbers.any((barber) => barber['isSelected']);
                       if (hasSelected) {
+                        final selectedBarber = barbers
+                            .firstWhere((barber) => barber['isSelected']);
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const BookingScreen()),
+                            builder: (context) => BookingScreen(
+                              serviceName: widget.serviceName,
+                              servicePrice: widget.servicePrice,
+                              barberName: selectedBarber['name'],
+                              barberImage: selectedBarber['imageUrl'].isEmpty
+                                  ? 'https://example.com/default-image.jpg'
+                                  : selectedBarber['imageUrl'],
+                            ),
+                          ),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

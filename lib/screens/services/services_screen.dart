@@ -480,10 +480,57 @@ class _ServicesScreenState extends State<ServicesScreen> {
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
               onPressed: () {
+                // تحقق من وجود خدمة مختارة
+                bool hasSelectedService = false;
+                String selectedName = '';
+                double selectedPrice = 0;
+
+                if (showServices) {
+                  hasSelectedService =
+                      services.any((service) => service.isSelected);
+                  if (hasSelectedService) {
+                    final service =
+                        services.firstWhere((service) => service.isSelected);
+                    selectedName = service.name;
+                    selectedPrice = service.price;
+                  }
+                } else if (showPackages) {
+                  hasSelectedService =
+                      packages.any((package) => package.isSelected);
+                  if (hasSelectedService) {
+                    final package =
+                        packages.firstWhere((package) => package.isSelected);
+                    selectedName = package.name;
+                    selectedPrice = package.price;
+                  }
+                } else if (showOffers) {
+                  hasSelectedService = offers.any((offer) => offer.isSelected);
+                  if (hasSelectedService) {
+                    final offer =
+                        offers.firstWhere((offer) => offer.isSelected);
+                    selectedName = offer.name;
+                    selectedPrice = offer.price;
+                  }
+                }
+
+                if (!hasSelectedService) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('برجاء اختيار خدمة'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                // انتقل لصفحة الحلاقين
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const BarbersScreen(),
+                    builder: (context) => BarbersScreen(
+                      serviceName: selectedName,
+                      servicePrice: selectedPrice,
+                    ),
                   ),
                 );
               },

@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
+import 'booking_confirmation_screen.dart';
 
 class BookingScreen extends StatefulWidget {
-  const BookingScreen({super.key});
+  final String serviceName;
+  final String barberName;
+  final double servicePrice;
+  final String barberImage;
+
+  const BookingScreen({
+    super.key,
+    required this.serviceName,
+    required this.barberName,
+    required this.servicePrice,
+    required this.barberImage,
+  });
 
   @override
   State<BookingScreen> createState() => _BookingScreenState();
@@ -56,6 +68,38 @@ class _BookingScreenState extends State<BookingScreen> {
       }
       selectedDate = DateTime(currentYear, currentMonth, 1);
     });
+  }
+
+  void _handleNextButton() {
+    if (!mounted) return;
+
+    String period = isAM ? 'صباحاً' : 'مساءً';
+    String formattedTime =
+        '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')} $period';
+
+    print("Navigating with data:");
+    print("Service Name: ${widget.serviceName}");
+    print("Service Price: ${widget.servicePrice}");
+    print("Barber Name: ${widget.barberName}");
+    print("Booking Date: $selectedDate");
+    print("Booking Time: $formattedTime");
+    print("Image URL: ${widget.barberImage}");
+
+    var confirmationScreen = BookingConfirmationScreen(
+      serviceName: widget.serviceName,
+      servicePrice: widget.servicePrice,
+      barberName: widget.barberName,
+      bookingDate: selectedDate,
+      bookingTime: formattedTime,
+      imageUrl: widget.barberImage,
+    );
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => confirmationScreen,
+      ),
+      (route) => route.isFirst,
+    );
   }
 
   @override
@@ -211,23 +255,34 @@ class _BookingScreenState extends State<BookingScreen> {
                       currentMonth == selectedDate.month &&
                       currentYear == selectedDate.year;
 
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: isBooked
-                          ? Colors.red
-                          : isSelected
-                              ? Colors.amber
-                              : Colors.green,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        day.toString(),
-                        style: TextStyle(
-                          color: isSelected ? Colors.black : Colors.white,
-                          fontSize: 16,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
+                  return GestureDetector(
+                    onTap: () {
+                      if (!isBooked) {
+                        setState(() {
+                          selectedDate =
+                              DateTime(currentYear, currentMonth, day);
+                        });
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isBooked
+                            ? Colors.red
+                            : isSelected
+                                ? Colors.amber
+                                : Colors.green,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(
+                          day.toString(),
+                          style: TextStyle(
+                            color: isSelected ? Colors.black : Colors.white,
+                            fontSize: 16,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
                         ),
                       ),
                     ),
@@ -356,9 +411,7 @@ class _BookingScreenState extends State<BookingScreen> {
 
                 // زر التالي
                 ElevatedButton(
-                  onPressed: () {
-                    // logic للانتقال للصفحة التالية
-                  },
+                  onPressed: _handleNextButton,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFFB800),
                     minimumSize: const Size(200, 45),
